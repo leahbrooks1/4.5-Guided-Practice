@@ -63,7 +63,7 @@ const defaultProducts = [{
     name: "Rose Glass Vase",
     price: 85,
     stock: 4,
-    image: "images/images/roseglassvase.png",
+    image: "images/RoseGlassVase.png",
     description: "Hand-blown rose-colored glass vase with an elegant finish."
 },
 {
@@ -71,7 +71,7 @@ const defaultProducts = [{
     name: "Ocean Glass Bowl",
     price: 70,
     stock: 3,
-    image: "images/images/oceanglassbowl.png",
+    image: "images/OceanGlassBowl.png",
     description: "Decorative blue glass bowl inspired by ocean waves."
 },
 {
@@ -79,7 +79,7 @@ const defaultProducts = [{
     name: "Sunset Glass Orb",
     price: 110,
     stock: 2,
-    image: "images/images/sunsetglassorb.png",
+    image: "images/SunsetGlassOrb.png",
     description: "Handcrafted glass orb featuring warm sunset-inspired colors."
 }
 ];
