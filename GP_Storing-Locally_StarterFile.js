@@ -56,7 +56,32 @@ const defaultProducts = [{
 		stock: 0,
 		image: "images/NebulaOrb.png",
 		description: "Galaxy-inspired decorative glass orb."
-	}
+	},
+	
+{
+    id: 7,
+    name: "Rose Glass Vase",
+    price: 85,
+    stock: 4,
+    image: "images/RoseGlassVase.png",
+    description: "Hand-blown rose-colored glass vase with an elegant finish."
+},
+{
+    id: 8,
+    name: "Ocean Glass Bowl",
+    price: 70,
+    stock: 3,
+    image: "images/OceanGlassBowl.png",
+    description: "Decorative blue glass bowl inspired by ocean waves."
+},
+{
+    id: 9,
+    name: "Sunset Glass Orb",
+    price: 110,
+    stock: 2,
+    image: "images/SunsetGlassOrb.png",
+    description: "Handcrafted glass orb featuring warm sunset-inspired colors."
+}
 ];
 
 /* =========================================
