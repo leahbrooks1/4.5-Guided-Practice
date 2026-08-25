@@ -1,7 +1,7 @@
 /*
-    Author:
-    Date:
-    Purpose:
+    Author: Leah Brooks
+    Date: 8/24/26
+    Purpose: 4.5 Guided Practice
 */
 
 /* =========================================
@@ -49,14 +49,59 @@ const countdown = document.getElementById("countdown");
 ========================================= */
 
 // STEP 12
+function displayCart() {
+    // Clear previous render before rebuilding UI
+    cartItems.innerHTML = "";
+    let total = 0;
 
+    // Loop through each item in cart
+    cart.forEach(item => {
+        total += item.price;
+
+        const section = document.createElement("section");
+        section.classList.add("cart-item");
+
+        section.innerHTML = `
+            <p>${item.name}</p>
+            <p>$${item.price}</p>
+        `;
+
+        cartItems.appendChild(section);
+    });
+
+    // Update total display after loop completes
+    cartTotal.textContent = `Total: $${total}`;
+}
 
 /* =========================================
      EXPIRE CART SESSION
 ========================================= */
 
 // STEP 13
+function expireCart() {
 
+    // Restore stock back to inventory
+    cart.forEach(item => {
+        const product = products.find(product => product.id === item.id);
+
+        if (product) {
+            product.stock++;
+        }
+    });
+
+    // Update cart data in local storage
+    localStorage.setItem("products", JSON.stringify(products));
+
+    // Clear cart-related storage
+    localStorage.removeItem("cart");
+    localStorage.removeItem("cartEndTime");
+
+    // Notify user cart has expired
+    alert("Your item reservations have ended. Stock availability may have changed.");
+
+    // Redirect user back to the home page
+    window.location.href = "index.html";
+}
 
 /* =========================================
      SYNCHONIZE TIMER TO REAL-TIME

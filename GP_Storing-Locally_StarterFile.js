@@ -89,6 +89,9 @@ const defaultProducts = [{
 ========================================= */
 
 // STEP 4
+let products = JSON.parse(localStorage.getItem("products")) || defaultProducts;
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cartEndTime = localStorage.getItem("cartEndTime") || null;
 
 /* =========================================
     DOM REFERENCES
@@ -105,28 +108,95 @@ const cartButton = document.getElementById("cart-button");
 ========================================= */
 
 // STEP 5
+if (cartButton) {
+   cartButton.addEventListener("click", () => window.location.href = "cart.html");
 
+      cartButton.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          window.location.href = "cart.html";
+      }
+    });
+}
 
 /* =========================================
      CREATE TOOLTIP ELEMENT
 ========================================= */
 
 // STEP 6
-
+const tooltip = document.createElement("div");
+tooltip.classList.add("mouse-tooltip");
+tooltip.textContent = "OUT OF STOCK";
+document.body.appendChild(tooltip);
 
 /* =========================================
      DISPLAY PRODUCTS
 ========================================= */
 
 // STEP 7
+function displayProducts() {
 
+    productGrid.innerHTML = "";
+    products.forEach(product => {
+        const card = document.createElement("article");
+        card.classList.add("product-card");
+
+        if (product.stock === 0) {
+            card.classList.add("out-of-stock");
+
+            // Show tooltip while mouse moves
+            card.addEventListener("mousemove", event => {
+                tooltip.style.left = `${event.clientX}px`;
+                tooltip.style.top = `${event.clientY}px`;
+                tooltip.classList.add("show");
+            });
+
+            // Hide tooltip 
+            card.addEventListener("mouseleave", () => {
+                tooltip.classList.remove("show");
+            });
+        }
+
+        card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <section class="product-content">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+                <p>$${product.price}</p>
+                <p class="stock">Available: ${product.stock}</p>
+                <button
+                    ${product.stock === 0 ? "disabled" : ""}
+                    onclick="addToCart(${product.id})"
+                    aria-label="Add ${product.name} to cart"
+                >
+                    Add To Cart
+                </button>
+            </section>
+        `;
+
+        productGrid.appendChild(card);
+    });
+}
 
 /* =========================================
     ADD TO CART
 ========================================= */
 
 // STEP 8
+function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    if(product.stock <= 0) return;
 
+    product.stock--;
+    cart.push(product);
+
+    // Update inventory functions
+    saveData();
+    startTimer();
+    displayProducts();
+    displayCart();
+    showNotification();
+}
 
 /* =========================================
     UPDATE CART COUNT
@@ -140,6 +210,11 @@ function displayCart() {
 ========================================= */
 
 // STEP 9
+function saveData() {
+    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem("cart", JSON.stringify(cart));
+    if(cartEndTime) localStorage.setItem("cartEndTime", cartEndTime);
+}
 
 
 /* =========================================
@@ -155,14 +230,56 @@ function showNotification() {
 ========================================= */
 
 // STEP 10
+function startTimer() {
+    if(!cartEndTime) {
+        cartEndTime = Date.now() + 15 * 60 * 1000; // 15 minutes
+        localStorage.setItem("cartEndTime", cartEndTime);
+    }
+}
 
+function updateTimer() {
+    if(!countdown) return;
+    if(!cartEndTime) {
+        countdown.textContent = "15:00";
+        return;
+    }
+
+    const remaining = cartEndTime - Date.now();
+
+    if(remaining <= 0) {
+        clearCart();
+        return;
+    }
+
+    const m = Math.floor(remaining / 1000 / 60);
+    const s = Math.floor((remaining / 1000) % 60);
+    countdown.textContent = `${m}:${s.toString().padStart(2,"0")}`;
+}
 
 /* =========================================
     CLEAR CART
 ========================================= */
 
 // STEP 11
+function clearCart() {
+   cart.forEach(item => {
+       const p = products.find(x => x.id === item.id);
+       if (p) p.stock++;
+   });
 
+   cart = [];
+   cartEndTime = null;
+
+   localStorage.removeItem("cart");
+   localStorage.removeItem("cartEndTime");
+   localStorage.setItem("products", JSON.stringify(products));
+
+   displayProducts();
+   displayCart();
+
+   if (countdown) countdown.textContent = "15:00";
+   alert("Your item reservations have ended. Stock availability may have changed.");
+}
 
 /* =========================================
     INITIALIZATION
